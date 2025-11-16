@@ -459,6 +459,9 @@ function validarPuesto(numStr) {
   }
   
   const numero = parseInt(numStr.trim());
+  console.log('DEBUG: numStr.trim() =', numStr.trim());
+  console.log('DEBUG: parseInt(numStr.trim()) =', numero);
+  console.log('DEBUG: /^\\d+$/.test(numStr.trim()) =', /^\\d+$/.test(numStr.trim()));
   if (isNaN(numero) || !/^\\d+$/.test(numStr.trim())) {
     showPopup('⚠️ Solo números permitidos', 'error');
     return false;
