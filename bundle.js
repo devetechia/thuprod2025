@@ -5,7 +5,7 @@ const CONFIG = {
   coloresTareas: {
     'Flejar+Paquete': 'rgba(25, 135, 84, 0.8)',
     'Paquete': 'rgba(255, 165, 0, 0.8)',
-    'Bobina': 'rgba(128, 128, 128, 0.8)',
+    'Bobina': 'rgba(238, 54, 54, 0.8)',
     'Cuna': 'rgba(165, 42, 42, 0.8)',
     'Tacos': '#a2785b',
   },
@@ -459,10 +459,7 @@ function validarPuesto(numStr) {
   }
   
   const numero = parseInt(numStr.trim());
-  console.log('DEBUG: numStr.trim() =', numStr.trim());
-  console.log('DEBUG: parseInt(numStr.trim()) =', numero);
-  console.log('DEBUG: /^\\d+$/.test(numStr.trim()) =', /^\\d+$/.test(numStr.trim()));
-  if (isNaN(numero) || !/^\\d+$/.test(numStr.trim())) {
+  if (isNaN(numero) || !/^\d+$/.test(numStr.trim())) {
     showPopup('⚠️ Solo números permitidos', 'error');
     return false;
   }
