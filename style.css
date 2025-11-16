@@ -1,0 +1,208 @@
+:root {
+  --bg-light: #f8f9fa;
+  --text-light: #212529;
+  --bg-dark: #212529;
+  --text-dark: #f8f9fa;
+  --primary: #0d6efd;
+  --danger: #dc3545;
+  --success: #198754;
+  --warning: #ffc107;
+  --info: #0dcaf0;
+  --card-border-light: #dee2e6;
+  --card-border-dark: #495057;
+  --color-p: #FFA500; /* Naranja */
+  --color-b: #808080; /* Gris */
+  --color-c: #A52A2A; /* Marrón */
+}
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  background-color: var(--bg-light);
+  color: var(--text-light);
+  margin: 0;
+  padding: 15px;
+  transition: background-color 0.3s, color 0.3s;
+}
+body.dark-mode {
+  background-color: var(--bg-dark);
+  color: var(--text-dark);
+}
+.vista-container {
+  display: none;
+}
+.vista-container.active {
+  display: block;
+}
+#theme-toggle {
+  position: fixed;
+  top: 15px;
+  right: 15px;
+  z-index: 1000;
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+}
+.modo-toggle,
+.filtros-graficas,
+.hist-tabs,
+.horas-filtros {
+  margin-bottom: 20px;
+}
+.modo-toggle button,
+.filtros-graficas button,
+.hist-tabs button,
+.horas-filtros button {
+  border: none;
+  padding: 8px 16px;
+  margin-right: 8px;
+  border-radius: 20px;
+  cursor: pointer;
+  background-color: #6c757d;
+  color: white;
+}
+.modo-toggle button.active,
+.filtros-graficas button.active,
+.hist-tabs button.active,
+.horas-filtros button.active {
+  background-color: var(--primary);
+}
+.puesto {
+  border: 1px solid var(--card-border-light);
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 15px;
+}
+body.dark-mode .puesto {
+  border-color: var(--card-border-dark);
+}
+.puesto-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 1.2em;
+  font-weight: 600;
+}
+.puesto-header button {
+  background: var(--danger);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.tarea-buttons {
+  margin-top: 10px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.tarea-buttons button {
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.tarea-buttons button.F-P {
+  background-color: var(--success);
+}
+.tarea-buttons button.P {
+  background-color: var(--color-p);
+}
+.tarea-buttons button.B {
+  background-color: var(--color-b);
+}
+.tarea-buttons button.C {
+  background-color: var(--color-c);
+}
+.tarea-buttons button.T {
+  background-color: #a2785b;
+}
+.log-entry {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--card-border-light);
+}
+body.dark-mode .log-entry {
+  border-bottom-color: var(--card-border-dark);
+}
+.log-entry button {
+  background: var(--danger);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 2px 8px;
+  cursor: pointer;
+}
+.tabla-resumen {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+.tabla-resumen th,
+.tabla-resumen td {
+  border: 1px solid var(--card-border-light);
+  padding: 8px;
+  text-align: center;
+}
+body.dark-mode .tabla-resumen th,
+body.dark-mode .tabla-resumen td {
+  border-color: var(--card-border-dark);
+}
+.tabla-resumen th {
+  background-color: #e9ecef;
+}
+body.dark-mode .tabla-resumen th {
+  background-color: #343a40;
+}
+#clear-today-btn {
+  background-color: var(--danger);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+#add-puesto-btn {
+  background-color: var(--success);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+input {
+  padding: 8px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+/* Pop-up */
+.popup {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: var(--success);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 5px;
+  z-index: 1001;
+  visibility: hidden;
+  opacity: 0;
+  transition: visibility 0s, opacity 0.5s linear;
+}
+
+.popup.show {
+  visibility: visible;
+  opacity: 1;
+}
