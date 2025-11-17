@@ -242,6 +242,12 @@ function toggleTheme() {
     const isDark = document.body.classList.contains('dark-mode');
     const btn = document.getElementById('theme-toggle');
     if (btn) btn.textContent = isDark ? '☀️' : '🌙';
+    
+    const headerIcon = document.getElementById('header-icon');
+    if (headerIcon) {
+      headerIcon.src = isDark ? 'icon-header.png' : 'icon-header-black.png';
+    }
+    
     localStorage.setItem('theme', isDark ? 'dark-mode' : '');
   } catch (e) {
     console.error('Error cambiando tema:', e);
@@ -769,6 +775,15 @@ function init() {
       document.body.classList.add('dark-mode');
       const btn = document.getElementById('theme-toggle');
       if (btn) btn.textContent = '☀️';
+      const headerIcon = document.getElementById('header-icon');
+      if (headerIcon) {
+        headerIcon.src = 'icon-header.png';
+      }
+    } else {
+      const headerIcon = document.getElementById('header-icon');
+      if (headerIcon) {
+        headerIcon.src = 'icon-header-black.png';
+      }
     }
     
     const jornadaInput = document.getElementById('jornada-minutos-input');
