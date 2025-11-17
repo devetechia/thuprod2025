@@ -1,4 +1,4 @@
-const CACHE_NAME = 'tareas-app-v46';
+const CACHE_NAME = 'tareas-app-v47';
 const urlsToCache = [
     './',
     './index.html',
@@ -34,5 +34,6 @@ self.addEventListener('fetch', event => {
         fetch(event.request).catch(() => caches.match(event.request))
     );
 });
+
 
 
