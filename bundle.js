@@ -347,7 +347,7 @@ function renderDistribucionHoras(rango) {
   const cont = document.getElementById('horas-container');
   if (!cont) return;
   cont.innerHTML = '<p>Cargando datos...</p>';
-  
+
   const hoy = new Date();
   let start, end;
 
@@ -375,42 +375,89 @@ function renderDistribucionHoras(rango) {
       start = end = STATE.jornadaActual;
   }
 
-  const logFiltrado = getLogsForDateRange(start, end);
+  const allLogs = [];
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (key.startsWith('log-')) {
+      const fecha = key.substring(4);
+      const logDate = parseDdMmYyyy(fecha);
+      const startDateObj = parseDdMmYyyy(start);
+      const endDateObj = parseDdMmYyyy(end);
 
-  if (logFiltrado.length === 0) {
+      if (logDate >= startDateObj && logDate <= endDateObj) {
+        const dayLogs = loadFromStorage(key, []);
+        allLogs.push(...dayLogs);
+      }
+    }
+  }
+
+  if (allLogs.length === 0) {
     cont.innerHTML = '<p>No hay datos para este rango.</p>';
     return;
   }
 
-  const esfuerzo = logFiltrado.reduce((acc, l) => {
-    acc[l.puesto] = (acc[l.puesto] || 0) + (CONFIG.tiempos[l.tarea] || 0);
+  const logsPorFecha = allLogs.reduce((acc, l) => {
+    if (!acc[l.fecha]) acc[l.fecha] = [];
+    acc[l.fecha].push(l);
     return acc;
   }, {});
 
-  const totalEsfuerzo = Object.values(esfuerzo).reduce((s, v) => s + v, 0);
+  const fechasOrdenadas = Object.keys(logsPorFecha).sort((a, b) => parseDdMmYyyy(b).getTime() - parseDdMmYyyy(a).getTime());
 
-  if (totalEsfuerzo === 0) {
-    cont.innerHTML = '<p>No hay tareas con tiempo.</p>';
-    return;
-  }
+  let htmlContent = `<h3>Distribución de Horas - ${rango}</h3>`;
 
-  const asignacion = {};
-  Object.keys(esfuerzo).forEach(p => {
-    const minutos = (esfuerzo[p] / totalEsfuerzo) * STATE.jornadaMinutos;
-    asignacion[p] = { minutos, horas: minutos / 60 };
+  fechasOrdenadas.forEach(fecha => {
+    const logsDelDia = logsPorFecha[fecha];
+    const tituloFecha = parseDdMmYyyy(fecha).toLocaleDateString('es-ES', { weekday: 'long', day: 'numeric', month: 'long' });
+
+    const esfuerzoDelDia = logsDelDia.reduce((acc, l) => {
+      acc[l.puesto] = (acc[l.puesto] || 0) + (CONFIG.tiempos[l.tarea] || 0);
+      return acc;
+    }, {});
+
+    const totalEsfuerzoDelDia = Object.values(esfuerzoDelDia).reduce((s, v) => s + v, 0);
+
+    if (totalEsfuerzoDelDia === 0) {
+      htmlContent += `<div class="puesto"><div class="puesto-header"><h4>${tituloFecha}</h4></div><p>No hay tareas con tiempo para este día.</p></div>`;
+      return;
+    }
+
+    const asignacionDelDia = {};
+    Object.keys(esfuerzoDelDia).forEach(p => {
+      const minutos = (esfuerzoDelDia[p] / totalEsfuerzoDelDia) * STATE.jornadaMinutos;
+      asignacionDelDia[p] = { minutos, horas: minutos / 60 };
+    });
+
+    htmlContent += `
+      <div class="puesto">
+        <div class="puesto-header">
+          <h4>${tituloFecha}</h4>
+        </div>
+        <table class="tabla-resumen">
+          <thead>
+            <tr>
+              <th>Puesto</th>
+              <th>Tiempo</th>
+              <th>Decimal</th>
+            </tr>
+          </thead>
+          <tbody>
+    `;
+    Object.keys(asignacionDelDia)
+      .sort((a, b) => asignacionDelDia[b].minutos - asignacionDelDia[a].minutos)
+      .forEach(p => {
+        const h = Math.floor(asignacionDelDia[p].minutos / 60);
+        const m = Math.round(asignacionDelDia[p].minutos % 60);
+        htmlContent += `<tr><td><strong style="color:${getColorPuesto(p)};">P${p}</strong></td><td>${h}h ${m}min</td><td>${asignacionDelDia[p].horas.toFixed(2)}</td></tr>`;
+      });
+    htmlContent += `
+          </tbody>
+        </table>
+      </div>
+    `;
   });
 
-  let html = `<h3>Distribución de Horas - ${rango}</h3><table class="tabla-resumen"><thead><tr><th>Puesto</th><th>Tiempo</th><th>Decimal</th></tr></thead><tbody>`;
-  Object.keys(asignacion)
-    .sort((a, b) => asignacion[b].minutos - asignacion[a].minutos)
-    .forEach(p => {
-      const h = Math.floor(asignacion[p].minutos / 60);
-      const m = Math.round(asignacion[p].minutos % 60);
-      html += `<tr><td><strong style="color:${getColorPuesto(p)};">P${p}</strong></td><td>${h}h ${m}min</td><td>${asignacion[p].horas.toFixed(2)}</td></tr>`;
-    });
-  html += '</tbody></table>';
-
-  cont.innerHTML = html;
+  cont.innerHTML = htmlContent;
 }
 
 function renderGraficas(periodo) {
